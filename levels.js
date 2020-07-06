@@ -28,7 +28,7 @@ function newMessage(userid) {
 	} else {
 		sent_message_recently[userid] = true;
 		setTimeout(function() {
-			sent_message_recently[userid] = null;
+			delete sent_message_recently[userid];
 		}, 60000);
 	}
 
