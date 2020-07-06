@@ -1,5 +1,5 @@
 const Database = require("better-sqlite3");
-const db = new Database("mesebot.db", {verbose: console.log});
+const db = new Database("levels.sqlite", {verbose: console.log});
 const {message_xp} = require("./config.json");
 
 var sent_message_recently = {};
