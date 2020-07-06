@@ -2,12 +2,9 @@
 	"name": "mesebot",
 	"version": "0.1.0",
 	"description": "",
-	"main": "main.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"author": "LoneWolfHT",
-	"license": "ISC",
+	"main": "mesebot.js",
+	"author": "MinetestBots",
+	"license": "MIT",
 	"dependencies": {
 		"better-sqlite3": "^7.1.0",
 		"discord.js": "^12.2.0"

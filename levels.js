@@ -8,32 +8,26 @@ console.log(db.prepare("CREATE TABLE IF NOT EXISTS main.levels (" +
 	"userid INTEGER PRIMARY KEY NOT NULL," +
 	"messages INTEGER NOT NULL DEFAULT 0," +
 	"experience INTEGER NOT NULL DEFAULT 0)"
-).run())
+).run());
 
-function newUser(userid)
-{
+function newUser(userid) {
 	console.assert(userid);
 
-	let statement = db.prepare("INSERT INTO main.levels VALUES ($userid, 0, 0)");
+	const statement = db.prepare("INSERT INTO main.levels VALUES ($userid, 0, 0)");
 
 	console.log(statement.run({userid: userid}));
 }
 
-function newMessage(userid)
-{
+function newMessage(userid) {
 	console.assert(userid);
 
 	let new_xp = Math.floor((Math.random() * (message_xp.max - message_xp.min)) + message_xp.min);
 
-	if (sent_message_recently[userid])
-	{
+	if (sent_message_recently[userid]) {
 		new_xp = 0;
-	}
-	else
-	{
+	} else {
 		sent_message_recently[userid] = true;
-		setTimeout(function()
-		{
+		setTimeout(function() {
 			sent_message_recently[userid] = null;
 		}, 60000);
 	}
@@ -47,18 +41,16 @@ function newMessage(userid)
 
 	let result = statement.run({userid: userid, new_xp: new_xp});
 
-	if (result.changes <= 0)
-	{
+	if (result.changes <= 0) {
 		newUser(userid);
 		newMessage(userid);
 	}
 }
 
-function getRank(userid)
-{
+function getRank(userid) {
 	console.assert(userid);
 
-	let output = "Can't be found"
+	let output = "No rank information was found.";
 
 	let statement = db.prepare(
 		"SELECT messages, experience " +
@@ -68,8 +60,7 @@ function getRank(userid)
 	let success = statement.get({userid: userid});
 
 	if (success)
-		output = "Your messages: " + success.messages +
-		" | Your Experience: " + success.experience
+		output = `Messages: ${success.messages} | Experience: ${success.experience}`;
 
 	return(output);
 }
