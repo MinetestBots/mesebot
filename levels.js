@@ -21,7 +21,7 @@ function newUser(userid) {
 function newMessage(userid) {
 	console.assert(userid);
 
-	let new_xp = Math.floor((Math.random() * (message_xp.max - message_xp.min)) + message_xp.min);
+	let new_xp = Math.floor(Math.random() * (message_xp.max - message_xp.min)) + message_xp.min;
 
 	if (sent_message_recently[userid]) {
 		new_xp = 0;
