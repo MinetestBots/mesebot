@@ -6,14 +6,13 @@ var recent = {};
 
 console.log(db.prepare("CREATE TABLE IF NOT EXISTS main.levels (" +
 	"userid INTEGER PRIMARY KEY NOT NULL," +
-	"messages INTEGER NOT NULL DEFAULT 0," +
 	"experience INTEGER NOT NULL DEFAULT 0)"
 ).run());
 
 function newUser(userid) {
 	console.assert(userid);
 
-	const statement = db.prepare("INSERT INTO main.levels VALUES ($userid, 0, 0)");
+	const statement = db.prepare("INSERT INTO main.levels VALUES ($userid, 0)");
 
 	console.log(statement.run({userid: userid}));
 }
@@ -34,7 +33,6 @@ function newMessage(userid) {
 
 	let statement = db.prepare("UPDATE main.levels SET " +
 		"userid = $userid, " +
-		"messages = messages + 1, " +
 		"experience = experience + $new_xp " +
 		"WHERE userid = $userid"
 	);
@@ -54,10 +52,7 @@ function getLevel(xp) {
 function getInfo(user) {
 	console.assert(user);
 
-	let statement = db.prepare(
-		"SELECT messages, experience " +
-		"FROM main.levels WHERE userid = $userid"
-	);
+	let statement = db.prepare("SELECT experience FROM main.levels WHERE userid = $userid");
 
 	let success = statement.get({userid: user.id});
 
