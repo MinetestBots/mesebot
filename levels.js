@@ -1,5 +1,7 @@
+const debug = false;
+
 const Database = require("better-sqlite3");
-const db = new Database("levels.sqlite", {verbose: console.log});
+const db = new Database("levels.sqlite", {verbose: debug && console.log || null});
 const updateRoles = require("./roles.js");
 const {xp} = require("./config.json");
 
@@ -9,10 +11,10 @@ const emote = ":mese_shard:729887863776346173";
 var recent = {};
 
 // Initial database creation
-console.log(db.prepare("CREATE TABLE IF NOT EXISTS levels (" +
+db.prepare("CREATE TABLE IF NOT EXISTS levels (" +
 	"id TEXT PRIMARY KEY NOT NULL," +
 	"xp INTEGER NOT NULL DEFAULT 0)"
-).run());
+).run();
 
 // Current level based on xp
 function getLevel(xp) {
@@ -22,7 +24,7 @@ function getLevel(xp) {
 const dbNewUser = db.prepare("INSERT INTO levels VALUES ($id, 0)");
 function newUser(userID) {
 	console.assert(userID);
-	console.log(dbNewUser.run({id: userID}));
+	dbNewUser.run({id: userID});
 }
 
 // Give random xp to user
