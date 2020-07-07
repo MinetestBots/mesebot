@@ -1,7 +1,8 @@
 const Discord = require("discord.js");
+const client = new Discord.Client();
+
 const levels = require("./levels.js");
 const config = require("./config.json");
-const client = new Discord.Client();
 
 client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}.`);
@@ -37,7 +38,7 @@ client.on("message", message => {
 			message.channel.send(`Could not find user \"${params[0]}\".`);
 		}
 	} else if (command == "levels") {
-		// message.reply(levels.getRanks());
+		message.channel.send(levels.getTop());
 	}
 });
 

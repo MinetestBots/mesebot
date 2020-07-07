@@ -7,7 +7,7 @@ var recent = {};
 
 // Initial database creation
 console.log(db.prepare("CREATE TABLE IF NOT EXISTS levels (" +
-	"id INTEGER PRIMARY KEY NOT NULL," +
+	"id TEXT PRIMARY KEY NOT NULL," +
 	"xp INTEGER NOT NULL DEFAULT 0)"
 ).run());
 
@@ -56,6 +56,8 @@ function newMessage(guildMember) {
 	updateRoles(guildMember, getLevel(getXP(guildMember.id)));
 }
 
+const emote = ":mese_shard:729887863776346173";
+
 // Info embed
 function getInfo(user) {
 	console.assert(user);
@@ -70,12 +72,43 @@ function getInfo(user) {
 			author: {
 				"name": `Stats for ${user.username}`,
 			},
-			"description": `<:mese_shard:729887863776346173> ${xp} Mese shards.\n:bar_chart: Level ${getLevel(xp)}.`
+			"description": `<${emote}> ${xp} Mese shards.\n:bar_chart: Level ${getLevel(xp)}.`
 		}
 	});
+}
+
+// Top 10 xp entries
+const dbGetTop = db.prepare("SELECT id, xp FROM levels ORDER BY xp DESC LIMIT 10");
+function getTop() {
+	let embed = {
+		"embed": {
+			"color": 16099946,
+			"title": `<${emote}> __Top 10 Members__ <${emote}>`,
+			"fields": [
+				{
+					"name": "Shards",
+					"value": "",
+					"inline": true
+				},
+				{
+					"name": "Name",
+					"value": "",
+					"inline": true
+				}
+			]
+		}
+	};
+
+	for (const entry of dbGetTop.all()) {
+		embed.embed.fields[0].value += `${entry.xp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}\n`;
+		embed.embed.fields[1].value += `<@${entry.id}>\n`;
+	}
+
+	return embed;
 }
 
 module.exports = {
 	newMessage,
 	getInfo,
+	getTop,
 };
