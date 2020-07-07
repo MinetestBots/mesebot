@@ -21,13 +21,13 @@ client.on("message", message => {
 
 	if (command == "rank") {
 		if (!params[0]) {
-			message.channel.send(levels.getRank(message.author));
+			message.channel.send(levels.getInfo(message.author));
 		} else if (message.mentions.users.size > 0) {
-			message.channel.send(levels.getRank(message.channel.guild.members.cache.get(message.mentions.users.keys().next().value).user));
+			message.channel.send(levels.getInfo(message.channel.guild.members.cache.get(message.mentions.users.keys().next().value).user));
 		} else {
 			for (const member of message.channel.guild.members.cache) {
 				if (member[1].user.username.toLowerCase().includes(params[0].toLowerCase())) {
-					message.channel.send(levels.getRank(member[1].user));
+					message.channel.send(levels.getInfo(member[1].user));
 					return;
 				}
 			}

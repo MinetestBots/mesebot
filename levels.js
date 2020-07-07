@@ -47,7 +47,11 @@ function newMessage(userid) {
 	}
 }
 
-function getRank(user) {
+function getLevel(xp) {
+	return Math.floor((-5 + Math.sqrt(5 * xp - 5)) / 10);
+}
+
+function getInfo(user) {
 	console.assert(user);
 
 	let statement = db.prepare(
@@ -69,12 +73,12 @@ function getRank(user) {
 			author: {
 				"name": `Stats for ${user.username}`,
 			},
-			"description": `<:mese_shard:729887863776346173> ${success.experience} Mese shards.\n:bar_chart: Level 1337.`
+			"description": `<:mese_shard:729887863776346173> ${success.experience} Mese shards.\n:bar_chart: Level ${getLevel(success.experience)}.`
 		}
 	});
 }
 
 module.exports = {
 	newMessage,
-	getRank,
+	getInfo,
 }
