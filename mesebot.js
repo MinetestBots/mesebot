@@ -12,7 +12,7 @@ client.on("message", message => {
 		return;
 
 	if (!message.content.startsWith(config.prefix)) {
-		levels.newMessage(message.author.id, message.author.username);
+		levels.newMessage(message.author.id);
 		return;
 	}
 
@@ -21,9 +21,18 @@ client.on("message", message => {
 
 	if (command == "rank") {
 		if (!params[0]) {
-			message.channel.send(levels.getRank(message.author.id));
+			message.channel.send(levels.getRank(message.author));
+		} else if (message.mentions.users.size > 0) {
+			message.channel.send(levels.getRank(message.channel.guild.members.cache.get(message.mentions.users.keys().next().value).user));
 		} else {
-			// Todo
+			for (const member of message.channel.guild.members.cache) {
+				if (member[1].user.username.toLowerCase().includes(params[0].toLowerCase())) {
+					message.channel.send(levels.getRank(member[1].user));
+					return;
+				}
+			}
+
+			message.channel.send(`No such user \"${params[0]}\"`);
 		}
 	} else if (command == "levels") {
 		// message.reply(levels.getRanks());

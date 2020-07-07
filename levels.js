@@ -47,22 +47,31 @@ function newMessage(userid) {
 	}
 }
 
-function getRank(userid) {
-	console.assert(userid);
-
-	let output = "No rank information was found.";
+function getRank(user) {
+	console.assert(user);
 
 	let statement = db.prepare(
 		"SELECT messages, experience " +
 		"FROM main.levels WHERE userid = $userid"
 	);
 
-	let success = statement.get({userid: userid});
+	let success = statement.get({userid: user.id});
 
-	if (success)
-		output = `Messages: ${success.messages} | Experience: ${success.experience}`;
+	if (!success || !success.experience)
+		success = {experience: 0};
 
-	return(output);
+	return({
+		"embed": {
+			"color": 16099946,
+			"thumbnail": {
+				"url": `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`
+			},
+			author: {
+				"name": `Stats for ${user.username}`,
+			},
+			"description": `<:mese_shard:idgoeshere> ${success.experience} Mese shards.\n:bar_chart: Level 1337.`
+		}
+	});
 }
 
 module.exports = {
