@@ -69,7 +69,7 @@ function getRank(user) {
 			author: {
 				"name": `Stats for ${user.username}`,
 			},
-			"description": `<:mese_shard:idgoeshere> ${success.experience} Mese shards.\n:bar_chart: Level 1337.`
+			"description": `<:mese_shard:729887863776346173> ${success.experience} Mese shards.\n:bar_chart: Level 1337.`
 		}
 	});
 }
