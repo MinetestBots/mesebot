@@ -1,7 +1,10 @@
 const Database = require("better-sqlite3");
 const db = new Database("levels.sqlite", {verbose: console.log});
-const {xp} = require("./config.json");
 const updateRoles = require("./roles.js");
+const {xp} = require("./config.json");
+
+const color = 15987456;
+const emote = ":mese_shard:729887863776346173";
 
 var recent = {};
 
@@ -56,8 +59,6 @@ function newMessage(guildMember) {
 	updateRoles(guildMember, getLevel(getXP(guildMember.id)));
 }
 
-const emote = ":mese_shard:729887863776346173";
-
 // Info embed
 function getInfo(user) {
 	console.assert(user);
@@ -65,7 +66,7 @@ function getInfo(user) {
 
 	return({
 		"embed": {
-			"color": 16099946,
+			"color": color,
 			"thumbnail": {
 				"url": `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`
 			},
@@ -80,7 +81,7 @@ const dbGetTop = db.prepare("SELECT id, xp FROM levels ORDER BY xp DESC LIMIT 10
 function getTop() {
 	let embed = {
 		"embed": {
-			"color": 16099946,
+			"color": color,
 			"title": `<${emote}> __Top 10 Members__ <${emote}>`,
 			"fields": [
 				{
