@@ -1,8 +1,8 @@
 const Database = require("better-sqlite3");
 const db = new Database("levels.sqlite", {verbose: console.log});
-const {message_xp} = require("./config.json");
+const {xp} = require("./config.json");
 
-var sent_message_recently = {};
+var recent = {};
 
 console.log(db.prepare("CREATE TABLE IF NOT EXISTS main.levels (" +
 	"userid INTEGER PRIMARY KEY NOT NULL," +
@@ -21,15 +21,15 @@ function newUser(userid) {
 function newMessage(userid) {
 	console.assert(userid);
 
-	let new_xp = Math.floor(Math.random() * (message_xp.max - message_xp.min)) + message_xp.min;
+	let new_xp = Math.floor(Math.random() * (xp.max - xp.min)) + xp.min;
 
-	if (sent_message_recently[userid]) {
+	if (recent[userid]) {
 		new_xp = 0;
 	} else {
-		sent_message_recently[userid] = true;
+		recent[userid] = true;
 		setTimeout(function() {
-			delete sent_message_recently[userid];
-		}, 60000);
+			delete recent[userid];
+		}, xp.rate * 1000);
 	}
 
 	let statement = db.prepare("UPDATE main.levels SET " +

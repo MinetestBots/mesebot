@@ -1,5 +1,9 @@
 {
 	"prefix": "!",
-	"token": "Yourtokenhere",
-	"message_xp": {"min": 3, "max": 5}
+	"token": "ABCDEFGHIJKLMNOPQRSTUVWXYZ.1234567890",
+	"xp": {
+		"min": 3,
+		"max": 5,
+		"rate": 60
+	}
 }
