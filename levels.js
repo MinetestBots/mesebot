@@ -69,9 +69,7 @@ function getInfo(user) {
 			"thumbnail": {
 				"url": `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`
 			},
-			author: {
-				"name": `Stats for ${user.username}`,
-			},
+			"title": `Stats for ${user.username}`,
 			"description": `<${emote}> ${xp} Mese shards.\n:bar_chart: Level ${getLevel(xp)}.`
 		}
 	});
