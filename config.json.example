@@ -2,8 +2,13 @@
 	"prefix": "!",
 	"token": "ABCDEFGHIJKLMNOPQRSTUVWXYZ.1234567890",
 	"xp": {
-		"min": 3,
-		"max": 5,
-		"rate": 60
-	}
+		"min": 3, // Minimum xp per message
+		"max": 5, // Maximum xp per message
+		"rate": 60 // Time (in seconds) to wait before gaining more xp
+	},
+	"role_rewards": [ // Optional
+		[10, "2356983476432239"], // [level, role id]
+		[25, "4693468056934683"],
+		[50, "9673209434673933"]
+	]
 }

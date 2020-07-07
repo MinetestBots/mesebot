@@ -1,63 +1,65 @@
 const Database = require("better-sqlite3");
 const db = new Database("levels.sqlite", {verbose: console.log});
 const {xp} = require("./config.json");
+const updateRoles = require("./roles.js");
 
 var recent = {};
 
-console.log(db.prepare("CREATE TABLE IF NOT EXISTS main.levels (" +
-	"userid INTEGER PRIMARY KEY NOT NULL," +
-	"experience INTEGER NOT NULL DEFAULT 0)"
+// Initial database creation
+console.log(db.prepare("CREATE TABLE IF NOT EXISTS levels (" +
+	"id INTEGER PRIMARY KEY NOT NULL," +
+	"xp INTEGER NOT NULL DEFAULT 0)"
 ).run());
 
-function newUser(userid) {
-	console.assert(userid);
-
-	const statement = db.prepare("INSERT INTO main.levels VALUES ($userid, 0)");
-
-	console.log(statement.run({userid: userid}));
-}
-
-function newMessage(userid) {
-	console.assert(userid);
-
-	let new_xp = Math.floor(Math.random() * (xp.max - xp.min)) + xp.min;
-
-	if (recent[userid]) {
-		new_xp = 0;
-	} else {
-		recent[userid] = true;
-		setTimeout(function() {
-			delete recent[userid];
-		}, xp.rate * 1000);
-	}
-
-	let statement = db.prepare("UPDATE main.levels SET " +
-		"userid = $userid, " +
-		"experience = experience + $new_xp " +
-		"WHERE userid = $userid"
-	);
-
-	let result = statement.run({userid: userid, new_xp: new_xp});
-
-	if (result.changes <= 0) {
-		newUser(userid);
-		newMessage(userid);
-	}
-}
-
+// Current level based on xp
 function getLevel(xp) {
-	return Math.floor((-5 + Math.sqrt(5 * xp - 5)) / 10);
+	return Math.max(0, Math.floor((-5 + Math.sqrt(5 * xp)) / 10));
 }
 
+const dbNewUser = db.prepare("INSERT INTO levels VALUES ($id, 0)");
+function newUser(userID) {
+	console.assert(userID);
+	console.log(dbNewUser.run({id: userID}));
+}
+
+// Give random xp to user
+const dbUpdateXP = db.prepare("UPDATE levels SET xp = xp + $xp WHERE id = $id");
+function updateXP(userID) {
+	console.assert(userID);
+
+	if (recent[userID]) return;
+
+	recent[userID] = true;
+	setTimeout(function() {
+		delete recent[userID];
+	}, xp.rate * 1000);
+
+	let res = dbUpdateXP.run({id: userID, xp: Math.floor(Math.random() * (xp.max - xp.min)) + xp.min});
+
+	if (res.changes <= 0) {
+		newUser(userID);
+		recent[userID] = false; // Set to false so second update executes
+		updateXP(userID);
+	}
+}
+
+const dbGetXP = db.prepare("SELECT xp FROM levels WHERE id = $id");
+function getXP(userID) {
+	console.assert(userID);
+	const res = dbGetXP.get({id: userID});
+	return (res && res.xp) || 0;
+}
+
+// Do message updates
+function newMessage(guildMember) {
+	updateXP(guildMember.id);
+	updateRoles(guildMember, getLevel(getXP(guildMember.id)));
+}
+
+// Info embed
 function getInfo(user) {
 	console.assert(user);
-
-	let statement = db.prepare("SELECT experience FROM main.levels WHERE userid = $userid");
-
-	let success = statement.get({userid: user.id});
-
-	if (!success || !success.experience)
-		success = {experience: 0};
+	const xp = getXP(user.id);
 
 	return({
 		"embed": {
@@ -68,7 +70,7 @@ function getInfo(user) {
 			author: {
 				"name": `Stats for ${user.username}`,
 			},
-			"description": `<:mese_shard:729887863776346173> ${success.experience} Mese shards.\n:bar_chart: Level ${getLevel(success.experience)}.`
+			"description": `<:mese_shard:729887863776346173> ${xp} Mese shards.\n:bar_chart: Level ${getLevel(xp)}.`
 		}
 	});
 }
@@ -76,4 +78,4 @@ function getInfo(user) {
 module.exports = {
 	newMessage,
 	getInfo,
-}
+};
