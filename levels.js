@@ -20,7 +20,13 @@ db.prepare("CREATE TABLE IF NOT EXISTS levels (" +
 
 // Current level based on xp
 function getLevel(xp) {
-	return Math.max(0, Math.floor((-5 + Math.sqrt(5 * xp)) / 10));
+	// Completely arbitrary roughly quadratic function
+	return Math.max(0, Math.floor((-5 + Math.sqrt(5 * xp)) / 20));
+}
+
+// Get xp needed for a level
+function getLevelXP(level) {
+	return (((level * 20) + 5) ** 2) / 5;
 }
 
 const dbNewUser = db.prepare("INSERT INTO levels VALUES ($id, 0)");
@@ -76,6 +82,7 @@ function newMessage(message) {
 function getInfo(user) {
 	console.assert(user);
 	const xp = getXP(user.id);
+	const level = getLevel(xp);
 
 	return {
 		"embed": {
@@ -84,7 +91,7 @@ function getInfo(user) {
 				"url": `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`
 			},
 			"title": `Stats for ${user.username}`,
-			"description": `${emoji} ${xp} ${name}.\n:bar_chart: Level ${getLevel(xp)}.`
+			"description": `${emoji} ${xp} ${name}.\n:bar_chart: Level ${level}.\n:chart_with_upwards_trend: ${getLevelXP(level + 1) - xp} ${name} to next level.`
 		}
 	};
 }
