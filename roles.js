@@ -6,7 +6,7 @@ role_rewards.sort((a, b) => {return a[0] - b[0]});
 function getLevelRole(level) {
 	let roleID = null;
 	for (const reward of role_rewards) {
-		if (reward[0] < level) roleID = reward[1];
+		if (level >= reward[0]) roleID = reward[1];
 	}
 	return roleID;
 }
@@ -25,7 +25,11 @@ function updateRoles(user, level) {
 		}
 
 		user.roles.add(roleID);
+		return true;
 	}
 }
 
-module.exports = updateRoles;
+module.exports = {
+	getLevelRole,
+	updateRoles,
+};

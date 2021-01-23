@@ -10,5 +10,7 @@
 		[10, "2356983476432239"], // [level, role id]
 		[25, "4693468056934683"],
 		[50, "9673209434673933"]
-	]
+	],
+	"reward_notify": false, // Default: true
+	"reward_message": "You are now rank $ROLE, $USER." // Default: "$USER You have earned the $ROLE role."
 }

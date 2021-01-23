@@ -14,7 +14,7 @@ client.on("message", message => {
 
 	// Do updating
 	if (!message.content.startsWith(config.prefix)) {
-		levels.newMessage(message.guild.member(message.author));
+		levels.newMessage(message);
 		return;
 	}
 

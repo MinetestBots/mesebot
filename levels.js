@@ -2,8 +2,8 @@ const debug = false;
 
 const Database = require("better-sqlite3");
 const db = new Database("levels.sqlite", {verbose: debug && console.log || null});
-const updateRoles = require("./roles.js");
-const {xp} = require("./config.json");
+const {getLevelRole, updateRoles} = require("./roles.js");
+const {xp, reward_notify, reward_message} = require("./config.json");
 
 const color = 15987456;
 const emote = ":mese_shard:729887863776346173";
@@ -56,9 +56,16 @@ function getXP(userID) {
 }
 
 // Do message updates
-function newMessage(guildMember) {
+function newMessage(message) {
+	const guildMember = message.guild.member(message.author);
 	updateXP(guildMember.id);
-	updateRoles(guildMember, getLevel(getXP(guildMember.id)));
+
+	const level = getLevel(getXP(guildMember.id));
+	if (updateRoles(guildMember, level) && reward_notify != false) {
+		message.guild.roles.fetch(getLevelRole(level)).then((role) => {
+			message.channel.send((reward_message || "$USER You have earned the $ROLE role.").replace("$ROLE", role.name).replace("$USER", `<@${guildMember.id}>`));
+		});
+	};
 }
 
 // Info embed
