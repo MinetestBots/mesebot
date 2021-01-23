@@ -3,10 +3,12 @@ const debug = false;
 const Database = require("better-sqlite3");
 const db = new Database("levels.sqlite", {verbose: debug && console.log || null});
 const {getLevelRole, updateRoles} = require("./roles.js");
-const {xp, reward_notify, reward_message} = require("./config.json");
+const config = require("./config.json");
 
-const color = 15987456;
-const emote = ":mese_shard:729887863776346173";
+const color = config.color || 1539327;
+const cxp = config.xp || {};
+const name = cxp.name || "XP";
+const emoji = cxp.emoji || "";
 
 var recent = {};
 
@@ -37,9 +39,11 @@ function updateXP(userID) {
 	recent[userID] = true;
 	setTimeout(function() {
 		delete recent[userID];
-	}, xp.rate * 1000);
+	}, (cxp.rate || 60) * 1000);
 
-	let res = dbUpdateXP.run({id: userID, xp: Math.floor(Math.random() * (xp.max - xp.min)) + xp.min});
+	const min = cxp.min || 3;
+	const max = cxp.max || 5;
+	let res = dbUpdateXP.run({id: userID, xp: Math.floor(Math.random() * (max - min)) + min});
 
 	if (res.changes <= 0) {
 		newUser(userID);
@@ -61,9 +65,9 @@ function newMessage(message) {
 	updateXP(guildMember.id);
 
 	const level = getLevel(getXP(guildMember.id));
-	if (updateRoles(guildMember, level) && reward_notify != false) {
+	if (updateRoles(guildMember, level) && config.reward_notify != false) {
 		message.guild.roles.fetch(getLevelRole(level)).then((role) => {
-			message.channel.send((reward_message || "$USER You have earned the $ROLE role.").replace("$ROLE", role.name).replace("$USER", `<@${guildMember.id}>`));
+			message.channel.send((config.reward_message || "$USER You have earned the $ROLE role.").replace("$ROLE", role.name).replace("$USER", `<@${guildMember.id}>`));
 		});
 	};
 }
@@ -80,7 +84,7 @@ function getInfo(user) {
 				"url": `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`
 			},
 			"title": `Stats for ${user.username}`,
-			"description": `<${emote}> ${xp} Mese shards.\n:bar_chart: Level ${getLevel(xp)}.`
+			"description": `${emoji} ${xp} ${name}.\n:bar_chart: Level ${getLevel(xp)}.`
 		}
 	};
 }
@@ -91,10 +95,10 @@ function getTop() {
 	let embed = {
 		"embed": {
 			"color": color,
-			"title": `<${emote}> __Top 10 Members__ <${emote}>`,
+			"title": `${emoji} __Top 10 Members__ ${emoji}`,
 			"fields": [
 				{
-					"name": "Shards",
+					"name": name,
 					"value": "",
 					"inline": true
 				},

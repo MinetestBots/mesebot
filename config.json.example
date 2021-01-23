@@ -1,16 +1,19 @@
 {
-	"prefix": "!",
-	"token": "ABCDEFGHIJKLMNOPQRSTUVWXYZ.1234567890",
+	"prefix": "!", // Required
+	"token": "ABCDEFGHIJKLMNOPQRSTUVWXYZ.1234567890", // Required
+	"color": 1539327, // Color for info embeds
 	"xp": {
 		"min": 3, // Minimum xp per message
 		"max": 5, // Maximum xp per message
-		"rate": 60 // Time (in seconds) to wait before gaining more xp
+		"rate": 60, // Time (in seconds) to wait before gaining more xp
+		"name": "XP", // Name for xp (shown in info embeds)
+		"emoji": "", // Emoji used for info embeds
 	},
-	"role_rewards": [ // Optional
+	"role_rewards": [ // Optional, no default
 		[10, "2356983476432239"], // [level, role id]
 		[25, "4693468056934683"],
 		[50, "9673209434673933"]
 	],
-	"reward_notify": false, // Default: true
-	"reward_message": "You are now rank $ROLE, $USER." // Default: "$USER You have earned the $ROLE role."
+	"reward_notify": true, // Should users be notified of new roles
+	"reward_message": "$USER You have earned the $ROLE role." // Message to send users
 }

@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 
 const levels = require("./levels.js");
-const config = require("./config.json");
+const {prefix, token} = require("./config.json");
 
 client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}.`);
@@ -13,13 +13,13 @@ client.on("message", message => {
 		return;
 
 	// Do updating
-	if (!message.content.startsWith(config.prefix)) {
+	if (!message.content.startsWith(prefix)) {
 		levels.newMessage(message);
 		return;
 	}
 
 	// Check for commands
-	const params = message.content.slice(config.prefix.length).split(" ");
+	const params = message.content.slice(prefix.length).split(" ");
 	const command = params.shift().toLowerCase();
 
 	if (command == "rank") {
@@ -42,4 +42,4 @@ client.on("message", message => {
 	}
 });
 
-client.login(config.token);
+client.login(token);
