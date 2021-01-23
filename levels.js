@@ -66,7 +66,7 @@ function getInfo(user) {
 	console.assert(user);
 	const xp = getXP(user.id);
 
-	return({
+	return {
 		"embed": {
 			"color": color,
 			"thumbnail": {
@@ -75,7 +75,7 @@ function getInfo(user) {
 			"title": `Stats for ${user.username}`,
 			"description": `<${emote}> ${xp} Mese shards.\n:bar_chart: Level ${getLevel(xp)}.`
 		}
-	});
+	};
 }
 
 // Top 10 xp entries
