@@ -3,8 +3,8 @@
 	"token": "ABCDEFGHIJKLMNOPQRSTUVWXYZ.1234567890", // Required
 	"color": 1539327, // Color for info embeds
 	"xp": {
-		"min": 3, // Minimum xp per message
-		"max": 5, // Maximum xp per message
+		"min": 15, // Minimum xp per message
+		"max": 25, // Maximum xp per message
 		"rate": 60, // Time (in seconds) to wait before gaining more xp
 		"name": "XP", // Name for xp (shown in info embeds)
 		"emoji": "", // Emoji used for info embeds
