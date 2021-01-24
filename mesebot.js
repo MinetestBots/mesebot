@@ -12,18 +12,31 @@ client.once("ready", () => {
 const commands = new (function() {
 	this.rank = (message, params) => {
 		if (!params[0]) { // Self info
-			message.channel.send(levels.getInfo(message.author));
+			message.channel.send(levels.getInfo(message.author))
 		} else if (message.mentions.users.size > 0) { // Mentioned user
-			message.channel.send(levels.getInfo(message.channel.guild.members.cache.get(message.mentions.users.keys().next().value).user));
+			message.channel.send(levels.getInfo(message.mentions.users.first()));
 		} else { // Named user
-			for (const member of message.channel.guild.members.cache) {
-				if (member[1].user.username.toLowerCase().includes(params[0].toLowerCase())) {
-					message.channel.send(levels.getInfo(member[1].user));
+			const members = message.channel.guild.members;
+
+			// Find by nick or username
+			members.fetch({query: params[0], limit: 1}).then(member => {
+				if (member.first()) {
+					message.channel.send(levels.getInfo(member.first().user));
 					return;
 				}
-			}
 
-			message.channel.send(`Could not find user \"${params[0]}\".`);
+				// Find by UUID
+				if (params[0].match(/\d{18}/)) {
+					members.fetch(params[0]).then(member => {
+						if (member) {
+							message.channel.send(levels.getInfo(member.user));
+						}
+					});
+					return;
+				}
+
+				message.channel.send(`Could not find user \"${params[0]}\".`);
+			});
 		}
 	}
 	this.level = this.rank;

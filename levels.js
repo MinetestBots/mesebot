@@ -15,7 +15,7 @@ let recent = {};
 db.prepare(`CREATE TABLE IF NOT EXISTS levels (
 	id TEXT PRIMARY KEY NOT NULL,
 	xp INTEGER NOT NULL DEFAULT 0,
-	level INTEGER NOT NULL DEFAULT 0);`).run();
+	level INTEGER NOT NULL DEFAULT 0)`).run();
 
 // Get xp needed for a level
 function getLevelXP(level) {
@@ -41,7 +41,7 @@ function updateUser(user_id, xp, level) {
 const dbGetUser = db.prepare("SELECT xp, level FROM levels WHERE id = $id");
 function getUser(user_id) {
 	console.assert(user_id);
-	return dbGetUser.get({id: user_id});
+	return dbGetUser.get({id: user_id}) || {xp: 0, level: 0};
 }
 
 // Do message updates
@@ -74,7 +74,7 @@ function newMessage(message) {
 // Info embed
 function getInfo(user) {
 	console.assert(user);
-	const data = getUser(user.id)
+	const data = getUser(user.id);
 
 	return {
 		"embed": {

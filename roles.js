@@ -10,6 +10,7 @@ function getLevelRole(level) {
 }
 
 // Swap out roles if needed
+// `user` is a GuildMember
 function updateRoles(user, level) {
 	if (role_rewards.length <= 0) return;
 
