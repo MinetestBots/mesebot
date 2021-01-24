@@ -9,10 +9,9 @@ client.once("ready", () => {
 });
 
 client.on("message", message => {
-	if (message.author.bot)
-		return;
+	if (message.author.bot)	return;
 
-	// Do updating
+	// Do user updating
 	if (!message.content.startsWith(prefix)) {
 		levels.newMessage(message);
 		return;

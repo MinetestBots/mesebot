@@ -1,14 +1,13 @@
 const debug = false;
 
-const Database = require("better-sqlite3");
-const db = new Database("levels.sqlite", {verbose: debug && console.log || null});
+const db = require("better-sqlite3")("levels.sqlite", {verbose: debug && console.log || null});
 const {getLevelRole, updateRoles} = require("./roles.js");
 const config = require("./config.json");
 
-const color = config.color || 1539327;
-const cxp = config.xp || {};
-const name = cxp.name || "XP";
-const emoji = cxp.emoji || "";
+config.color = config.color || 1539327;
+config.xp = config.xp || {};
+config.xp.name = config.xp.name || "XP";
+config.xp.emoji = config.xp.emoji || "";
 
 let recent = {};
 
@@ -54,12 +53,12 @@ function newMessage(message) {
 
 	setTimeout(() => {
 		delete recent[user_id];
-	}, (cxp.rate || 60) * 1000);
+	}, (config.xp.rate || 60) * 1000);
 
 	// Add random xp and check current data for levelup
 	const data = getUser(user_id);
-	const min = cxp.min || 15;
-	const max = cxp.max || 25;
+	const min = config.xp.min || 15;
+	const max = config.xp.max || 25;
 	const xp = data.xp + Math.floor(Math.random() * (max - min)) + min;
 	const level = xp >= getLevelXP(data.level + 1) ? data.level + 1 : data.level;
 
@@ -79,12 +78,14 @@ function getInfo(user) {
 
 	return {
 		"embed": {
-			"color": color,
+			"color": config.color,
 			"thumbnail": {
 				"url": `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`
 			},
 			"title": `Stats for ${user.username}`,
-			"description": `${emoji} ${data.xp} ${name}.\n:bar_chart: Level ${data.level}.\n:chart_with_upwards_trend: ${getLevelXP(data.level + 1) - data.xp} ${name} to next level.`
+			"description": `${config.xp.emoji} ${data.xp} ${config.xp.name}.\n` +
+				`:bar_chart: Level ${data.level}.\n` +
+				`:chart_with_upwards_trend: ${getLevelXP(data.level + 1) - data.xp} ${config.xp.name} to next level.`
 		}
 	};
 }
@@ -94,8 +95,8 @@ const dbGetTop = db.prepare("SELECT id, xp, level FROM levels ORDER BY xp DESC L
 function getTop() {
 	let embed = {
 		"embed": {
-			"color": color,
-			"title": `${emoji} __Top 10 Members__ ${emoji}`,
+			"color": config.color,
+			"title": `${config.xp.emoji} __Top 10 Members__ ${config.xp.emoji}`,
 			"fields": [
 				{
 					"name": "Name",
@@ -103,7 +104,7 @@ function getTop() {
 					"inline": true
 				},
 				{
-					"name": name,
+					"name": config.xp.name,
 					"value": "",
 					"inline": true
 				},
