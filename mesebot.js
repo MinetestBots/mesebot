@@ -8,20 +8,9 @@ client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}.`);
 });
 
-client.on("message", message => {
-	if (message.author.bot)	return;
-
-	// Do user updating
-	if (!message.content.startsWith(prefix)) {
-		levels.newMessage(message);
-		return;
-	}
-
-	// Check for commands
-	const params = message.content.slice(prefix.length).split(" ");
-	const command = params.shift().toLowerCase();
-
-	if (command == "rank") {
+// Register commands as object for easy aliasing
+const commands = new (function() {
+	this.rank = (message, params) => {
 		if (!params[0]) { // Self info
 			message.channel.send(levels.getInfo(message.author));
 		} else if (message.mentions.users.size > 0) { // Mentioned user
@@ -36,9 +25,28 @@ client.on("message", message => {
 
 			message.channel.send(`Could not find user \"${params[0]}\".`);
 		}
-	} else if (command == "levels") {
+	}
+	this.level = this.rank;
+
+	this.levels = (message) => {
 		message.channel.send(levels.getTop());
 	}
+	this.top = this.levels;
+});
+
+client.on("message", message => {
+	if (message.author.bot)	return;
+
+	// Do user updating
+	if (!message.content.startsWith(prefix)) {
+		levels.newMessage(message);
+		return;
+	}
+
+	// Check for command
+	const params = message.content.slice(prefix.length).split(" ");
+	const command = params.shift().toLowerCase();
+	if (commands[command]) commands[command](message, params);
 });
 
 client.login(token);
