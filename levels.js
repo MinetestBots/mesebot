@@ -86,7 +86,7 @@ function getInfo(user) {
             "title": `Stats for ${user.username}`,
             "description": `${config.xp.emoji} ${data.xp} ${config.xp.name}.\n` +
                 `:bar_chart: Level ${data.level}.\n` +
-                `:chart_with_upwards_trend: ${getLevelXP(data.level + 1) - data.xp} ${config.xp.name} to next level.`
+                `:chart_with_upwards_trend: ${Math.floor(getLevelXP(data.level + 1) - data.xp)} ${config.xp.name} to next level.`
         }
     };
 }
