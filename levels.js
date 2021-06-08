@@ -8,6 +8,7 @@ config.color = config.color || 1539327;
 config.xp = config.xp || {};
 config.xp.name = config.xp.name || "XP";
 config.xp.emoji = config.xp.emoji || "";
+config.ignored_channels = config.ignored_channels || [];
 
 let recent = {};
 
@@ -48,7 +49,7 @@ function getUser(user_id) {
 function newMessage(message) {
 	const user_id = message.author.id;
 
-	if (recent[user_id]) return;
+	if (recent[user_id] || config.ignored_channels.indexOf(message.channel.id) !== -1) return;
 	recent[user_id] = true;
 
 	setTimeout(() => {
