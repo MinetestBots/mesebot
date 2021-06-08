@@ -80,15 +80,17 @@ const commands = new (function() {
 
 client.on("message", message => {
     if (message.author.bot)	return;
+    let mention = `<@!${client.user.id}> `;
 
     // Do user updating
-    if (!message.content.startsWith(config.prefix)) {
+    if (!message.content.startsWith(config.prefix) && !message.content.startsWith(mention)) {
         levels.newMessage(message);
         return;
     }
 
     // Check for command
-    const params = message.content.slice(config.prefix.length).split(" ");
+    const prefix = message.content.startsWith(config.prefix) ? config.prefix : mention;
+    const params = message.content.slice(prefix.length).split(" ");
     const command = params.shift().toLowerCase();
     if (commands[command]) commands[command](message, params);
 });
