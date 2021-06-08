@@ -2,7 +2,7 @@
     "name": "mesebot",
     "version": "0.1.0",
     "description": "",
-    "main": "mesebot.js",
+    "main": "bot.js",
     "author": "MinetestBots",
     "license": "MIT",
     "dependencies": {
