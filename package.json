@@ -1,12 +1,12 @@
 {
-	"name": "mesebot",
-	"version": "0.1.0",
-	"description": "",
-	"main": "mesebot.js",
-	"author": "MinetestBots",
-	"license": "MIT",
-	"dependencies": {
-		"better-sqlite3": "^7.1.0",
-		"discord.js": "^12.2.0"
-	}
+    "name": "mesebot",
+    "version": "0.1.0",
+    "description": "",
+    "main": "mesebot.js",
+    "author": "MinetestBots",
+    "license": "MIT",
+    "dependencies": {
+        "better-sqlite3": "^7.1.0",
+        "discord.js": "^12.2.0"
+    }
 }
