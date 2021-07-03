@@ -23,6 +23,11 @@ function getLevelXP(level) {
     return 5 / 6 * level * (2 * level * level + 27 * level + 91); // Abducted from https://github.com/PsKramer/mee6calc/blob/master/calc.js
 }
 
+// Split numbers with commas
+function commas(xp) {
+    return xp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 const dbNewUser = db.prepare("INSERT INTO levels VALUES ($id, 0, 0)");
 function newUser(user_id) {
     console.assert(user_id);
@@ -84,9 +89,9 @@ function getInfo(user) {
                 "url": `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`
             },
             "title": `Stats for ${user.username}`,
-            "description": `${config.xp.emoji} ${data.xp} ${config.xp.name}.\n` +
+            "description": `${config.xp.emoji} ${commas(data.xp)} ${config.xp.name}.\n` +
                 `:bar_chart: Level ${data.level}.\n` +
-                `:chart_with_upwards_trend: ${Math.floor(getLevelXP(data.level + 1) - data.xp)} ${config.xp.name} to next level.`
+                `:chart_with_upwards_trend: ${commas(Math.floor(getLevelXP(data.level + 1) - data.xp))} ${config.xp.name} to next level.`
         }
     };
 }
@@ -120,7 +125,7 @@ function getTop() {
 
     for (const entry of dbGetTop.all()) {
         embed.embed.fields[0].value += `<@${entry.id}>\n`;
-        embed.embed.fields[1].value += `${entry.xp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}\n`; // Regex adds commas
+        embed.embed.fields[1].value += `${commas(entry.xp)}\n`; // Regex adds commas
         embed.embed.fields[2].value += `${entry.level}\n`;
     }
 
