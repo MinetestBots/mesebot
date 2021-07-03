@@ -31,12 +31,12 @@ const commands = new (function() {
                     members.fetch(params[0]).then(member => {
                         if (member) {
                             message.channel.send(levels.getInfo(member.user));
+                            return;
                         }
                     });
-                    return;
                 }
 
-                message.channel.send(`Could not find user \"${params[0]}\".`);
+                message.channel.send(`Could not find user or id \"${params[0]}\".`);
             });
         }
     }
