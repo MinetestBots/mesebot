@@ -54,7 +54,7 @@ function getUser(user_id) {
 function newMessage(message) {
     const user_id = message.author.id;
 
-    if (recent[user_id] || config.ignored_channels.indexOf(message.channel.id) !== -1) return;
+    if (message.type != "DEFAULT" || recent[user_id] || config.ignored_channels.indexOf(message.channel.id) !== -1) return;
     recent[user_id] = true;
 
     setTimeout(() => {
@@ -136,4 +136,5 @@ module.exports = {
     newMessage,
     getInfo,
     getTop,
+    getUser,
 };

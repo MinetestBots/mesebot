@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
+const roles = require ("./roles.js");
 const levels = require("./levels.js");
 const config = require("./config.json");
 
@@ -93,6 +94,10 @@ client.on("message", message => {
     const params = message.content.slice(prefix.length).split(" ");
     const command = params.shift().toLowerCase();
     if (commands[command]) commands[command](message, params);
+});
+
+client.on("guildMemberAdd", member => {
+    roles.updateRoles(member, levels.getUser(member.id).level);
 });
 
 client.login(config.token);
