@@ -28,12 +28,12 @@ const commands = new (function() {
 
                 // Find by UUID
                 if (params[0].match(/\d{18}/)) {
-                    members.fetch(params[0]).then(member => {
-                        if (member) {
-                            message.channel.send(levels.getInfo(member.user));
-                            return;
-                        }
-                    });
+                    if (levels.getUser(params[0]).rank > 0) {
+                        client.users.fetch(params[0]).then(user => {
+                            message.channel.send(levels.getInfo(user));
+                        });
+                        return;
+                    }
                 }
 
                 message.channel.send(`Could not find user or id \"${params[0]}\".`);
