@@ -44,10 +44,10 @@ function updateUser(user_id, xp, level) {
     }
 }
 
-const dbGetUser = db.prepare("SELECT xp, level FROM levels WHERE id = $id");
+const dbGetUser = db.prepare("SELECT sorted.rank, xp, level FROM levels, (SELECT COUNT(*) + 1 rank FROM levels WHERE xp > (SELECT xp FROM levels WHERE id = $id)) sorted WHERE id = $id;");
 function getUser(user_id) {
     console.assert(user_id);
-    return dbGetUser.get({id: user_id}) || {xp: 0, level: 0};
+    return dbGetUser.get({id: user_id}) || {xp: 0, level: 0, rank: 0};
 }
 
 // Do message updates
@@ -90,7 +90,7 @@ function getInfo(user) {
             },
             "title": `Stats for ${user.username}`,
             "description": `${config.xp.emoji} ${commas(data.xp)} ${config.xp.name}.\n` +
-                `:bar_chart: Level ${data.level}.\n` +
+                `:bar_chart: Level ${data.level}. :medal: Rank #${data.rank}.\n` +
                 `:chart_with_upwards_trend: ${commas(Math.floor(getLevelXP(data.level + 1) - data.xp))} ${config.xp.name} to next level.`
         }
     };
